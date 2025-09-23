@@ -1,0 +1,8 @@
+.todo-text {
+  transition: all 0.35s ease;
+}
+
+.todo-text.done {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
