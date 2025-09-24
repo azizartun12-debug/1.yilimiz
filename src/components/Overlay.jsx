@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 const LOCK_ENABLED = true;
 const TARGET = "2025-09-26T00:00:00+03:00"; // tarih geldiğinde otomatik kapan
 
+// [bypass] URL parametresi ile kilidi aşabilme (sadece sen kullan)
+const params = new URLSearchParams(window.location.search);
+const DEV_BYPASS = params.get("dev") === "1";
+
 export default function Overlay({ onClose }) {
   const [done, setDone] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -24,7 +28,7 @@ export default function Overlay({ onClose }) {
 
   function handleClose() {
     // Tarih kilidi aktifse ve tarih gelmediyse manuel kapanışı engelle
-    if (LOCK_ENABLED) {
+    if (LOCK_ENABLED && !DEV_BYPASS) {
       const now = new Date();
       const end = new Date(TARGET);
       if (now < end) return; // kilit devam ediyor
@@ -41,8 +45,8 @@ export default function Overlay({ onClose }) {
         <div className="overlay-actions">
           <button className="btn" onClick={handleClose}>Devam</button>
         </div>
-        {LOCK_ENABLED && (
-          <div style={{marginTop:10, fontSize:12, opacity:.6}}>
+        {LOCK_ENABLED && !DEV_BYPASS && (
+          <div style={{ marginTop: 10, fontSize: 12, opacity: .6 }}>
             Tarih geldiğinde otomatik açılacak.
           </div>
         )}
